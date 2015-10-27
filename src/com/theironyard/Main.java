@@ -1,6 +1,7 @@
 package com.theironyard;
 
 import spark.ModelAndView;
+import spark.Session;
 import spark.Spark;
 import spark.template.mustache.MustacheTemplateEngine;
 
@@ -10,9 +11,7 @@ import java.util.HashMap;
 public class Main {
 
     public static void main(String[] args) {
-        User user = new User();
 
-        ArrayList<User> users = new ArrayList(); //storing multiple users
         ArrayList<Post> posts = new ArrayList(); //storing multiple posts
 
         Spark.staticFileLocation("/public"); //Spark serve public as static files
@@ -21,57 +20,82 @@ public class Main {
         Spark.post(
                 "/create-user",
                 ((request, response) -> {
-                    user.username = request.queryParams("username"); //sets the name
-                    user.password = request.queryParams("password");
-                    users.add(user);
-                    response.redirect("/posts"); //redirects from /create-user to /posts page
+                    String username = request.queryParams("username"); //sets the name
+                    String password = request.queryParams("password");
+                    Session session = request.session();
+                    session.attribute("username", username);
+                    session.attribute("password", password);
+                    response.redirect("/"); //redirects from /create-user to /posts page
                     return "";
                 })
         );
-
-        //Below is a failed attempt to get the password field to function
-        //would replace "/create-user" above
-
-//        Spark.post(
-//                "/create-user",
-//                ((request, response) -> {
-//                    HashMap<String, String> logins = new HashMap();
-//                    user.username = request.queryParams("username"); //sets the username
-//                    user.password = request.queryParams("password"); //sets the password
-//                    users.add(user);
-//                    String pWord = user.password;
-//                    String uName = user.username;
-//                    logins.put("username", username); //trying to put username in the hashmap
-//                    logins.put("password", password); //trying to put password in the hashmap
-//                    if (user.password == pWord) {  //hashmap addition
-//                        response.redirect("/posts"); //redirects from /create-user to /posts page
-//                        return "";
-//                    } else
-//                        response.redirect("/");
-//                        return "";
-//                })
-//        );
 
         Spark.post(
                 "/create-post",
                 ((request, response) -> {
                     Post post = new Post();
+                    post.id = posts.size() + 1;
                     post.text = request.queryParams("text");
                     posts.add(post);
-                    response.redirect("/posts");
+                    response.redirect("/");
                     return "";
                 })
         );
 
-        Spark.get( //takes 3 arguments: "/posts",, ((request, response) -> {, new MustacheTemplateEngine()
-                "/posts",
+        Spark.get( //takes 3 arguments: "/posts" now -> "/",, ((request, response) -> {, new MustacheTemplateEngine()
+                "/",
                 ((request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    if (username == null) {
+                        return new ModelAndView(new HashMap(), "not-logged-in.html");
+                    }
                     HashMap m = new HashMap();
-                    m.put("username", user.username); //"username" calls the {{username}}
+                    m.put("username", username); //"username" calls the {{username}}
                     m.put("posts", posts); //"posts" calls the {{#posts}} and {{/posts}} field
-                    return new ModelAndView(m, "posts.html"); //this wants 2 things: your hashmap with your pair values in it (m.put) and the name of the template (posts.html).
+                    return new ModelAndView(m, "logged-in.html"); //this wants 2 things: your hashmap with your pair values in it (m.put) and the name of the template (logged-in.html).
                 }),
                 new MustacheTemplateEngine()
+        );
+
+        Spark.post(
+                "/delete-post",
+                ((request, response) -> {
+                    String id = request.queryParams("postid");
+                    try {
+                        int idNum = Integer.valueOf(id);
+                        posts.remove(idNum - 1);
+                        for (int i = 0; i < posts.size(); i++) { //renumbering the beers after you delete one of them
+                            posts.get(i).id = i + 1; //renumbering the beers after you delete one of them
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    response.redirect("/");
+                    return "";
+                })
+        );
+
+        Spark.post(
+                "/edit-post",
+                ((request, response) -> {
+                    String id = request.queryParams("postid");
+                    try {
+                        int idNum = Integer.valueOf(id);
+                        posts.remove(idNum - 1);
+                        Post post = new Post();
+                        post.text = request.queryParams("text");
+                        post.id = idNum - 1;
+                        posts.add(post);
+                        for (int i = 0; i < posts.size(); i++) { //renumbering the beers after you delete one of them
+                            posts.get(i).id = i + 1; //renumbering the beers after you delete one of them
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    response.redirect("/");
+                    return "";
+                })
         );
     }
 }
