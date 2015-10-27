@@ -1,14 +1,12 @@
 <html>
 <body>
 <form action="create-post" method="post">
-    <input type="text" placeholder="Write a post" name="post" />
+    <input type="text" placeholder="Write a post" name="text" />
     <button type="submit">Submit</button>
 </form>
-{{#users}}
 Posts by {{username}}: <br>
-{{/users}}
 {{#posts}}
-{{post}} <br>
+{{text}} <br>
 {{/posts}}
 </body>
 </html>
