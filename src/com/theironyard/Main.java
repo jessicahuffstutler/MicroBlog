@@ -20,12 +20,12 @@ public class Main {
         Spark.post(
                 "/create-user",
                 ((request, response) -> {
-                    String username = request.queryParams("username"); //sets the name
-                    String password = request.queryParams("password");
+                    String username = request.queryParams("username"); //sets the username
+                    String password = request.queryParams("password"); //sets the password
                     Session session = request.session();
                     session.attribute("username", username);
                     session.attribute("password", password);
-                    response.redirect("/"); //redirects from /create-user to /posts page
+                    response.redirect("/");
                     return "";
                 })
         );
@@ -84,7 +84,7 @@ public class Main {
                         int idNum = Integer.valueOf(id);
                         posts.get(idNum - 1).text = request.queryParams("text"); //replaces same number with edited text
                         for (int i = 0; i < posts.size(); i++) { //renumbering
-                            posts.get(i).id = i + 1; //renumberin
+                            posts.get(i).id = i + 1; //renumbering
                         }
                     } catch (Exception e) {
 
