@@ -82,11 +82,7 @@ public class Main {
                     String id = request.queryParams("postid");
                     try {
                         int idNum = Integer.valueOf(id);
-//                        posts.remove(idNum - 1);
-//                        Post post = new Post();
-//                        post.text = request.queryParams("text");
-//                        post.id = idNum - 1;
-//                        posts.add(post);
+                        posts.get(idNum - 1).text = request.queryParams("text");
                         for (int i = 0; i < posts.size(); i++) { //renumbering
                             posts.get(i).id = i + 1; //renumberin
                         }
