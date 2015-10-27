@@ -65,8 +65,8 @@ public class Main {
                     try {
                         int idNum = Integer.valueOf(id);
                         posts.remove(idNum - 1);
-                        for (int i = 0; i < posts.size(); i++) { //renumbering the beers after you delete one of them
-                            posts.get(i).id = i + 1; //renumbering the beers after you delete one of them
+                        for (int i = 0; i < posts.size(); i++) { //renumbering
+                            posts.get(i).id = i + 1; //renumbering
                         }
                     } catch (Exception e) {
 
@@ -82,13 +82,13 @@ public class Main {
                     String id = request.queryParams("postid");
                     try {
                         int idNum = Integer.valueOf(id);
-                        posts.remove(idNum - 1);
-                        Post post = new Post();
-                        post.text = request.queryParams("text");
-                        post.id = idNum - 1;
-                        posts.add(post);
-                        for (int i = 0; i < posts.size(); i++) { //renumbering the beers after you delete one of them
-                            posts.get(i).id = i + 1; //renumbering the beers after you delete one of them
+//                        posts.remove(idNum - 1);
+//                        Post post = new Post();
+//                        post.text = request.queryParams("text");
+//                        post.id = idNum - 1;
+//                        posts.add(post);
+                        for (int i = 0; i < posts.size(); i++) { //renumbering
+                            posts.get(i).id = i + 1; //renumberin
                         }
                     } catch (Exception e) {
 
