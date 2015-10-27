@@ -21,6 +21,7 @@ public class Main {
                 ((request, response) -> {
                     User user = new User();
                     user.username = request.queryParams("username"); //sets the name
+                    user.password = request.queryParams("password");
                     users.add(user);
                     response.redirect("/posts"); //redirects from /create-user to /posts page
                     return "";
