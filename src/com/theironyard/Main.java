@@ -23,7 +23,7 @@ public class Main {
                     String username = request.queryParams("username"); //sets the username
                     String password = request.queryParams("password"); //sets the password
                     Session session = request.session();
-                    session.attribute("username", username);
+                    session.attribute("username", username); //store that username that the user types into the session (key, value)
                     session.attribute("password", password);
                     response.redirect("/");
                     return "";
@@ -45,10 +45,10 @@ public class Main {
         Spark.get( //takes 3 arguments: "/posts" now -> "/",, ((request, response) -> {, new MustacheTemplateEngine()
                 "/",
                 ((request, response) -> {
-                    Session session = request.session();
+                    Session session = request.session(); //method called subject that gives you an object "session"
                     String username = session.attribute("username");
-                    if (username == null) {
-                        return new ModelAndView(new HashMap(), "not-logged-in.html");
+                    if (username == null) { //if the username doesn't exist in the hashmap yet, add it.
+                        return new ModelAndView(new HashMap(), "not-logged-in.html"); //new HashMap() = an empty hashmap. This is empty because we dont need to feed anything into it because it's a get not a post.
                     }
                     HashMap m = new HashMap();
                     m.put("username", username); //"username" calls the {{username}}
@@ -93,6 +93,29 @@ public class Main {
                     return "";
                 })
         );
+
+//Zach's Code
+//        Spark.post(
+//                "/edit-post",
+//                ((request, response) -> {
+//                    Session session = request.session();
+//                    String name = session.attribute("name");
+//
+//                    String id = request.queryParams("postid");
+//                    String text = request.queryParams("text");
+//                    try {
+//                        int idNum = Integer.valueOf(id);
+//                        ArrayList<Post> posts = users.get(name).posts; //looking up the post in the ArrayList
+//                        Post post = posts.get(idNum -1);
+//                        post.text = text; //that post will have an updated text field
+//                        //users.get(name).posts.get(idNum-1).text = text; //alex's code(instead of 3 lines above.)
+//                    } catch (Exception e) {
+//
+//                    }
+//                    response.redirect("/");
+//                    return "";
+//                })
+//        );
     }
 }
 
